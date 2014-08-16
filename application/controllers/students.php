@@ -1,6 +1,5 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-
 class Students extends CI_Controller {
 
 	public function index()
@@ -26,11 +25,20 @@ class Students extends CI_Controller {
 		
 	}
 	
-	public function editStudent()
+	public function editStudent($userId=0)
 	{
-		//$userId=$this->input->post('idstudent');
-		//echo $userId;
-		echo "Edit a student<br><br>";
+		//First call ($userId is 0 and must be retrieved from form)
+		if($userId==0){
+			$this->load->model("student_model");
+			//Validate ID provided in index_view's form
+			$userId = $this->student_model->validateId();
+			if($userId==false){
+				$this->load->view('formfail');
+				return false;
+			}
+		}
+		
+		//Create instance of chosen student to access data
 		$this->load->library("StudentFactory");
 		$data = array(
 			"student" => $this->studentfactory->getStudent($userId)
@@ -39,25 +47,41 @@ class Students extends CI_Controller {
 		//Validation rules located in config/form_validation.php
 		if ($this->form_validation->run() == FALSE)
 		{
+			//Create view with previous data for editing
 			$this->load->view("editStudent_view", $data);
 		}
 		else
 		{
-		echo $userId;
 			$this->load->model("student_model");
 			$this->student_model->editStudent($userId);
-			
 			$this->load->view('formsuccess');
 		}
 		
 	}
-	public function findStudentById()
+
+	public function deleteStudent($userId=0)
 	{
-	$this->load->model("student_model");
-	$this->student_model->validateId();
-	
+		//First call ($userId is 0 and must be retrieved from form)
+		if($userId==0){
+			$this->load->model("student_model");
+			//Validate ID provided in index_view's form
+			$userId = $this->student_model->validateId();
+			if($userId==false){
+				$this->load->view('formfail');
+				return false;
+			}
+		}
+
+		if (true)//NEED SOME KIND OF POP-UP MECHANISM TO DOUBLE CHECK
+		{
+			$this->load->model("student_model");
+			$this->student_model->deleteStudent($userId);
+			$this->load->view('formsuccess');
+		}
+		
 	}
-	public function show($userId = 0)
+	
+	public function displayAll($userId = 0)
 	{
 		//Always ensure an integer
 		$userId = (int)$userId;
@@ -67,7 +91,7 @@ class Students extends CI_Controller {
 		$data = array(
 			"students" => $this->studentfactory->getStudent($userId)
 		);
-		$this->load->view("student_view", $data);
+		$this->load->view("displayAll_view", $data);
 	}
 	
 

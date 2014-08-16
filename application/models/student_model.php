@@ -82,10 +82,6 @@ class Student_model extends CI_Model {
 	/*
 	Student Functions
 	*/
-	public function studentInfoArray(){
-	
-	
-	}
 	
 	public function addStudent(){
 	//make a data array of all student attributes
@@ -95,48 +91,34 @@ class Student_model extends CI_Model {
 			'midName' => $this->input->post('midName')
 
 		);
-		if ($this->db->insert("students", $data)) {
-				//Now we can get the ID and update the newly created object
-				//$this->_idstudents = $this->db->insert_idstudents();
-				return true;
-			}
-		return false;
-	
+		
+		$this->db->insert("students", $data);
 	}
 	
 	public function editStudent($userId){
 		$data = array(
-			//'idstudents' => $userId,
 			'firstName' => $this->input->post('firstName'),
 			'lastName' => $this->input->post('lastName'),
 			'midName' => $this->input->post('midName')
 		);
-		/*
-		if ($this->db->update("students", $data, $userId)) {
-				return true;
-		}
-		return false;
-		*/
-		$this->db->where('idstudents', $userId);
-		$this->db->update('students', $data); 
-		echo $userId;
 
-		//comments
+		$this->db->where('idstudents', $userId);
+		$this->db->update('students', $data); 	
 	}
 	
 	public function validateId(){
-	$userId=$this->input->post('idstudent');
-	$query=$this->db->get_where('students',array('idstudents'=>$userId)); //check if 'id' field is existed or not
-   if($query->num_rows() > 0)  // id found stop
-   {echo "id exists";
-	}
-	else{
-		echo "Id does not exist";
-	}
+		$userId=$this->input->post('idstudent');
+		$query=$this->db->get_where('students',array('idstudents'=>$userId)); 
+		if($query->num_rows() > 0){
+			return $userId;
+		}else{
+			echo "ID does not exist.";
+			return null;
+		}
 	}
 	
-	public function deleteStudent(){
-	$this->db->delete('students', array('idstudents' => $this->_idstudents)); 
+	public function deleteStudent($userId){
+		$this->db->delete('students', array('idstudents' => $userId)); 
 	}
 
 
