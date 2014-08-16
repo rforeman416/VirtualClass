@@ -14,30 +14,16 @@
 		</th>
 	</tr>
 	<tr>
-		<th>Edit Student
-			<?php echo form_open('controller/editStudent'); ?>
+		<th>Search Student
+			<?php echo form_open('controller/searchStudent'); ?>
 				<input type="text" name="idstudent" value="" size="8" />
-				<input type="submit" value="Edit" />
+				<input type="submit" value="search" />
 			</form>
 		</th>
-		<th>Edit Class
-			<?php echo form_open('controller/editClass'); ?>
+		<th>Search Class
+			<?php echo form_open('controller/searchClass'); ?>
 				<input type="text" name="idclass" value="" size="8" />
-				<input type="submit" value="Edit" />
-			</form>
-		</th>
-	</tr>
-	<tr>
-		<th>Remove Student
-			<?php echo form_open('controller/deleteStudent'); ?>
-				<input type="text" name="idstudent" value="" size="8" />
-				<input type="submit" value="Delete" />
-			</form>
-		</th>
-		<th>Remove Class
-			<?php echo form_open('controller/deleteClass'); ?>
-				<input type="text" name="idclass" value="" size="8" />
-				<input type="submit" value="Delete" />
+				<input type="submit" value="search" />
 			</form>
 		</th>
 	</tr>

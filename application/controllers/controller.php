@@ -43,19 +43,46 @@ class Controller extends CI_Controller {
 		
 	}
 	
-	public function editStudent($userId=0)
+	public function searchStudent()
 	{
-		//First call ($userId is 0 and must be retrieved from form)
-		if($userId==0){
-			$this->load->model("student_model");
-			//Validate ID provided in index_view's form
-			$userId = $this->student_model->validateId();
-			if($userId==false){
-				$this->load->view('formfail');
-				return false;
-			}
+		$this->load->model("student_model");
+		//Validate ID provided in index_view's form
+		$userId = $this->student_model->validateId();
+		if($userId==false){
+			$this->load->view('formfail');
+			return false;
 		}
-		
+		//$data['userId']=$userId;
+		$this->load->library("StudentFactory");
+		$data = array(
+			"students" => $this->studentfactory->getStudent($userId),
+			"userId" => $userId
+		);
+		$this->load->view('displayStudents_view', $data);
+		$this->load->view('searchResultStudent_view', $data);
+	}
+	
+		public function searchClass()
+	{
+		$this->load->model("class_model");
+		//Validate ID provided in index_view's form
+		$userId = $this->class_model->validateId();
+		if($userId==false){
+			$this->load->view('formfail');
+			return false;
+		}
+
+		$this->load->library("ClassFactory");
+		$data = array(
+			"classes" => $this->classfactory->getClass($userId),
+			"userId" => $userId
+		);
+		$this->load->view('displayClasses_view', $data);
+		$this->load->view('searchResultClass_view', $data);
+	}
+	
+	public function editStudent($userId)
+	{
 		//Create instance of chosen student to access data
 		$this->load->library("StudentFactory");
 		$data = array(
@@ -77,19 +104,8 @@ class Controller extends CI_Controller {
 		
 	}
 
-	public function editClass($userId=0)
+	public function editClass($userId)
 	{
-		//First call ($userId is 0 and must be retrieved from form)
-		if($userId==0){
-			$this->load->model("class_model");
-			//Validate ID provided in index_view's form
-			$userId = $this->class_model->validateId();
-			if($userId==false){
-				$this->load->view('formfail');
-				return false;
-			}
-		}
-		
 		//Create instance of chosen class to access data
 		$this->load->library("ClassFactory");
 		$data = array(
@@ -111,19 +127,8 @@ class Controller extends CI_Controller {
 		
 	}
 	
-	public function deleteStudent($userId=0)
+	public function deleteStudent($userId)
 	{
-		//First call ($userId is 0 and must be retrieved from form)
-		if($userId==0){
-			$this->load->model("student_model");
-			//Validate ID provided in index_view's form
-			$userId = $this->student_model->validateId();
-			if($userId==false){
-				$this->load->view('formfail');
-				return false;
-			}
-		}
-
 		if (true)//NEED SOME KIND OF POP-UP MECHANISM TO DOUBLE CHECK
 		{
 			$this->load->model("student_model");
