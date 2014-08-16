@@ -6,7 +6,7 @@
 
 <?php echo validation_errors(); ?>
 
-<?php echo form_open('students/addStudent'); ?>
+<?php echo form_open('controller/addStudent'); ?>
 
 <h5>First Name</h5>
 <input type="text" name="firstName" value="<?php echo set_value('firstName'); ?>" size="50" />

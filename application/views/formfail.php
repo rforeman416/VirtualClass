@@ -6,7 +6,7 @@
 
 <h3>Form Failure</h3>
 
-<p><?php echo anchor('students/index', 'Back'); ?></p>
+<p><?php echo anchor('controller/index', 'Back'); ?></p>
 
 </body>
 </html>

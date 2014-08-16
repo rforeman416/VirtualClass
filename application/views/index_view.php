@@ -5,37 +5,52 @@
 	</tr>		
 	<tr>
 		<th>
-			<a href="<?php echo site_url('/students/addStudent'); ?>">
-			Add
-			</a>
+			<a href="<?php echo site_url('/controller/addStudent'); ?>">
+			Add</a>
 		</th>
-		<th>Add</th>
+		<th>
+			<a href="<?php echo site_url('/controller/addClass'); ?>">
+			Add</a>
+		</th>
 	</tr>
 	<tr>
-		<th>Edit
-			<?php echo form_open('students/editStudent'); ?>
+		<th>Edit Student
+			<?php echo form_open('controller/editStudent'); ?>
 				<input type="text" name="idstudent" value="" size="8" />
 				<input type="submit" value="Edit" />
 			</form>
 		</th>
-		<th>Edit</th>
+		<th>Edit Class
+			<?php echo form_open('controller/editClass'); ?>
+				<input type="text" name="idclass" value="" size="8" />
+				<input type="submit" value="Edit" />
+			</form>
+		</th>
 	</tr>
 	<tr>
-		<th>Remove
-			<?php echo form_open('students/deleteStudent'); ?>
+		<th>Remove Student
+			<?php echo form_open('controller/deleteStudent'); ?>
 				<input type="text" name="idstudent" value="" size="8" />
 				<input type="submit" value="Delete" />
 			</form>
 		</th>
-		<th>Remove</th>
+		<th>Remove Class
+			<?php echo form_open('controller/deleteClass'); ?>
+				<input type="text" name="idclass" value="" size="8" />
+				<input type="submit" value="Delete" />
+			</form>
+		</th>
 	</tr>
 	<tr>
 		<th>
-		<a href="<?php echo site_url('/students/displayAll'); ?>">
-		Display all
+			<a href="<?php echo site_url('/controller/displayAll/s'); ?>">
+			Display all
 		</a>
 		</th>
-		<th>Display all</th>
+		<th>
+			<a href="<?php echo site_url('/controller/displayAll/c'); ?>">
+			Display all</a>
+		</th>
 	</tr>
 		<th>Enroll</th>
 

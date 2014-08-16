@@ -1,6 +1,7 @@
 <?php
 
 	$config = array(
+		'student'=>  array(
 				array(
 					'field'=>'firstName',
 					'label'=>'First Name',
@@ -12,5 +13,13 @@
 					'label'=>'Last Name',
 					'rules'=>'required'
 				)
-	
-			);
+		),
+		'class'=>  array(
+				array(
+					'field'=>'title',
+					'label'=>'Title',
+					'rules'=>'required'
+					
+				)
+		)			  
+	);

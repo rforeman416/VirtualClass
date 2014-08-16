@@ -6,7 +6,7 @@
 
 <?php echo validation_errors(); ?>
 
-<?php echo form_open('students/editStudent/'.$student->getId()); ?>
+<?php echo form_open('controller/editStudent/'.$student->getId()); ?>
 
 <h5>First Name</h5>
 <input type="text" name="firstName" value="<?php echo $student->getFirstName(); ?>" size="50" />
