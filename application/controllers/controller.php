@@ -138,18 +138,13 @@ class Controller extends CI_Controller {
 		
 	}
 	
+	public function listAllStudents($classId){
+	//list all students with classid in one of their class slots
+	//class model meth listAllStudents
+	}
+	
 	public function deleteClass($userId=0)
-	{
-		//First call ($userId is 0 and must be retrieved from form)
-		if($userId==0){
-			$this->load->model("class_model");
-			//Validate ID provided in index_view's form
-			$userId = $this->class_model->validateId();
-			if($userId==false){
-				$this->load->view('formfail');
-				return false;
-			}
-		}
+	{//IF CLASS DELETED, UN-ENROLL ALL STUDENTS, use list of students generated in listAllStudents model method?
 
 		if (true)//NEED SOME KIND OF POP-UP MECHANISM TO DOUBLE CHECK
 		{
@@ -181,6 +176,18 @@ class Controller extends CI_Controller {
 		
 	}
 	
-
-
+	public function enroll($userId, $classId)
+	{
+	//check if student has reached max number classes (make a model method "number of classes")
+	//check if already enrolled (make model method isInClass)
+	//if not, put classid into class slot (make a model method "add class")
+	//formsuccess
+	}
+	
+	public function unenroll($userId, $classId)
+	{
+	//check if student is enrolled in class (make a model method "isInClass")
+	//if yes, remove classid")
+	//formsuccess
+	}
 }

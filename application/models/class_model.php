@@ -84,6 +84,10 @@ class Class_model extends CI_Model {
 			return null;
 		}
 	}
+	public function listAllStudents($classId){
+	//list all students in classId
+	//RETURN A LIST OF STUDENTS FOR CLASS DELETE SENARIO
+	}
 	
 	public function deleteStudent($userId){
 		$this->db->delete('classes', array('idclasses' => $userId)); 
