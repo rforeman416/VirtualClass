@@ -121,6 +121,7 @@ class Student_model extends CI_Model {
 		$this->db->update('students', $data); 
 		echo $userId;
 
+		//comments
 	}
 	
 	public function validateId(){
