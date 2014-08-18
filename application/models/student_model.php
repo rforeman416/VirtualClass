@@ -117,9 +117,150 @@ class Student_model extends CI_Model {
 		}
 	}
 	
+	public function numOfClasses($userId){
+	   $query=$this->db->get_where('students',array('idstudents'=>$userId)); 
+	   $count=0;
+    		if ($query->num_rows() > 0) {
+    			//Loop through each row returned from the query
+    			foreach ($query->result() as $row) {
+					if($row->class1){$count++;}
+					if($row->class2){$count++;}
+					if($row->class3){$count++;}
+					if($row->class4){$count++;}
+				}
+			}
+		return $count;
+	}
+	
+	public function isEnrolled($userId){
+		$classId=$this->input->post('idclass');
+		echo $classId;
+		$this->db->select('*');
+		$this->db->from('students');
+		$this->db->where('idstudents', $userId);
+		$this->db->where('class1', $classId);
+		$this->db->or_where('class2', $classId);
+		$this->db->or_where('class3', $classId);
+		$this->db->or_where('class4', $classId);
+		$query=$this->db->get();
+		if ($query->num_rows() > 0) {
+			return true;
+		}
+		return false;
+	}
+	
+	public function enroll($userId){
+		$classId=$this->input->post('idclass');
+		   $query=$this->db->get_where('students',array('idstudents'=>$userId)); 
+			if ($query->num_rows() > 0) {
+				//Loop through each row returned from the query
+				foreach ($query->result() as $row) {
+					if(!$row->class1){
+						$data = array('class1' => $classId);
+						$this->db->where('idstudents', $userId);
+						$this->db->update('students', $data);		
+					}
+					elseif(!$row->class2){
+						$data = array('class2' => $classId);
+						$this->db->where('idstudents', $userId);
+						$this->db->update('students', $data);		
+					}
+					elseif(!$row->class3){
+						$data = array('class3' => $classId);
+						$this->db->where('idstudents', $userId);
+						$this->db->update('students', $data);		
+					}
+					else{
+						$data = array('class4' => $classId);
+						$this->db->where('idstudents', $userId);
+						$this->db->update('students', $data);		
+					}
+				}
+			}			
+	}
+
+	public function unenroll($userId, $classId=0){
+		if($classId==0){
+			$classId=$this->input->post('idclass');
+		}
+		   $query=$this->db->get_where('students',array('idstudents'=>$userId)); 
+			if ($query->num_rows() > 0) {
+				//Loop through each row returned from the query
+				foreach ($query->result() as $row) {
+					if($row->class1==$classId){
+						$data = array('class1' => null);
+						$this->db->where('idstudents', $userId);
+						$this->db->update('students', $data);		
+					}
+					elseif($row->class2==$classId){
+						$data = array('class2' => null);
+						$this->db->where('idstudents', $userId);
+						$this->db->update('students', $data);		
+					}
+					elseif($row->class3==$classId){
+						$data = array('class3' => null);
+						$this->db->where('idstudents', $userId);
+						$this->db->update('students', $data);		
+					}
+					elseif($row->class4==$classId){
+						$data = array('class4' => null);
+						$this->db->where('idstudents', $userId);
+						$this->db->update('students', $data);		
+					}
+				}
+			}
+	}
+	
 	public function deleteStudent($userId){
 		$this->db->delete('students', array('idstudents' => $userId)); 
 	}
 
+	public function totalNumOfStudents(){
+		return $this->db->count_all("students");
+	}
+	
+	public function paginationList($limit, $start){		
+        $this->db->limit($limit, $start);
+        $query = $this->db->get("students");
+ 
+        if ($query->num_rows() > 0) {
+            foreach ($query->result() as $row) {
+                $data[] = $row;
+            }
+            return $data;
+        }
+        return false;
+   
+	}
+	
+	public function getStudent($userId = 0, $classId=0){
+		$data = array();
+		if($userId>0){
+			$query = $this->db->get_where("students", array("idstudents" => $userId));
+			if ($query->num_rows() > 0) {
+				$data[] = $query->row();
+			}
+			else{echo "no student found";}
+		}
+		else{
+			$query = $this->db->select("*")->from("students")->get();
+			if ($query->num_rows() > 0) {
+				//Loop through each row returned from the query
+				foreach ($query->result() as $row) {
+					if($byClassId==0){
+						$data[] = $row;
+					}
+					else{
+						if($row->class1==$byClassId | $row->class2==$byClassId | $row->class3==$byClassId | $row->class4==$byClassId){
+							$data[] = $row;
+						}
+					}
+				}
+			}
+		}
+		return $data;
 
+	}
+	
 }
+

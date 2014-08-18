@@ -2,5 +2,5 @@
 
 <a href="<?php echo site_url('/controller/deleteClass/'.$userId); ?>">Delete class</a>
 
-<a href="<?php echo site_url('/controller/deleteClass/'.$userId); ?>">Diplay all enrolled students</a>
+<a href="<?php echo site_url('/controller/listAllStudents/'.$userId); ?>">Diplay all enrolled students</a>
 

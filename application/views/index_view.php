@@ -29,16 +29,16 @@
 	</tr>
 	<tr>
 		<th>
-			<a href="<?php echo site_url('/controller/displayAll/s'); ?>">
+			<a href="<?php echo site_url('/controller/displayAllStudents/'); ?>">
 			Display all
 		</a>
 		</th>
 		<th>
-			<a href="<?php echo site_url('/controller/displayAll/c'); ?>">
+			<a href="<?php echo site_url('/controller/displayAllClasses'); ?>">
 			Display all</a>
 		</th>
 	</tr>
-		<th>Enroll</th>
+
 
 	
 </table>

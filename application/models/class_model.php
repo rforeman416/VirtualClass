@@ -21,7 +21,6 @@ class Class_model extends CI_Model {
 	public function getID(){
 		return $this->_idclasses;
 	}
-	
 	public function setID($val){
 		$this->_idclasses = $val;
 	}
@@ -84,14 +83,49 @@ class Class_model extends CI_Model {
 			return null;
 		}
 	}
-	public function listAllStudents($classId){
-	//list all students in classId
-	//RETURN A LIST OF STUDENTS FOR CLASS DELETE SENARIO
-	}
 	
-	public function deleteStudent($userId){
+	public function deleteClass($userId){
 		$this->db->delete('classes', array('idclasses' => $userId)); 
 	}
 
+	public function totalNumOfClasses(){
+		return $this->db->count_all("classes");
+	}
+	
+	public function paginationList($limit, $start){		
+        $this->db->limit($limit, $start);
+        $query = $this->db->get("classes");
+ 
+        if ($query->num_rows() > 0) {
+            foreach ($query->result() as $row) {
+                $data[] = $row;
+            }
+            return $data;
+        }
+        return false;
+   
+	}
+	
+	public function getClass($userId = 0){
+	$data = array();
+		if($userId>0){
+			$query = $this->db->get_where("classes", array("idclasses" => $userId));
+			if ($query->num_rows() > 0) {
+				$data[] = $query->row();
+			}
+			else{echo "no class found";}
+		}
+		else{
+			$query = $this->db->select("*")->from("classes")->get();
+			if ($query->num_rows() > 0) {
+				//Loop through each row returned from the query
+				foreach ($query->result() as $row) {
+					$data[] = $row;
+				}
+			}
+		}
+		return $data;
+
+	}
 
 }

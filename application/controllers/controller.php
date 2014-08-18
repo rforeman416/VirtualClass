@@ -52,17 +52,17 @@ class Controller extends CI_Controller {
 			$this->load->view('formfail');
 			return false;
 		}
-		//$data['userId']=$userId;
-		$this->load->library("StudentFactory");
+		//$this->load->library("StudentFactory");
 		$data = array(
-			"students" => $this->studentfactory->getStudent($userId),
-			"userId" => $userId
+			"data" => $this->student_model->getStudent($userId),
+			"userId" => $userId,
+			"links"=>""
 		);
-		$this->load->view('displayStudents_view', $data);
+		$this->load->view('displayAllStudents_view', $data);
 		$this->load->view('searchResultStudent_view', $data);
 	}
 	
-		public function searchClass()
+	public function searchClass()
 	{
 		$this->load->model("class_model");
 		//Validate ID provided in index_view's form
@@ -72,21 +72,23 @@ class Controller extends CI_Controller {
 			return false;
 		}
 
-		$this->load->library("ClassFactory");
 		$data = array(
-			"classes" => $this->classfactory->getClass($userId),
-			"userId" => $userId
+			"data" => $this->student_model->getStudent($userId),
+			"userId" => $userId,
+			"links"=>""
 		);
-		$this->load->view('displayClasses_view', $data);
+		$this->load->view('displayAllClasses_view', $data);
 		$this->load->view('searchResultClass_view', $data);
 	}
 	
 	public function editStudent($userId)
 	{
 		//Create instance of chosen student to access data
-		$this->load->library("StudentFactory");
+		//$this->load->library("StudentFactory");
+		$this->load->model("student_model");
+		$students=$this->student_model->getStudent($userId);
 		$data = array(
-			"student" => $this->studentfactory->getStudent($userId)
+			"student" => $students[0]
 		);
 
 		//Validation rules located in config/form_validation.php
@@ -106,10 +108,12 @@ class Controller extends CI_Controller {
 
 	public function editClass($userId)
 	{
-		//Create instance of chosen class to access data
-		$this->load->library("ClassFactory");
+		//Create instance of chosen student to access data
+		//$this->load->library("StudentFactory");
+		$this->load->model("class_model");
+		$classes=$this->class_model->getClass($userId);
 		$data = array(
-			"class" => $this->classfactory->getClass($userId)
+			"class" => $classes[0]
 		);
 
 		//Validation rules located in config/form_validation.php
@@ -121,14 +125,14 @@ class Controller extends CI_Controller {
 		else
 		{
 			$this->load->model("class_model");
-			$this->class_model->editClass($userId);
+			$this->student_model->editClass($userId);
 			$this->load->view('formsuccess');
 		}
 		
 	}
 	
 	public function deleteStudent($userId)
-	{
+	{//pop up needed
 		if (true)//NEED SOME KIND OF POP-UP MECHANISM TO DOUBLE CHECK
 		{
 			$this->load->model("student_model");
@@ -139,55 +143,91 @@ class Controller extends CI_Controller {
 	}
 	
 	public function listAllStudents($classId){
-	//list all students with classid in one of their class slots
-	//class model meth listAllStudents
+			//$this->load->library("StudentFactory");
+			$this->load->model("student_model");
+			$data = array(
+				"data" => $this->student_model->getStudent(0,$classId)
+			);
+			$this->load->view("displayAll_view", $data);
 	}
 	
-	public function deleteClass($userId=0)
-	{//IF CLASS DELETED, UN-ENROLL ALL STUDENTS, use list of students generated in listAllStudents model method?
-
+	public function deleteClass($classId=0)
+	{//pop up needed
 		if (true)//NEED SOME KIND OF POP-UP MECHANISM TO DOUBLE CHECK
 		{
 			$this->load->model("class_model");
-			$this->class_model->deleteStudent($userId);
+			$this->class_model->deleteClass($classId);
+			
+			//$this->load->library("StudentFactory");
+			$this->load->model("student_model");
+			$data = $this->student_model->getStudent(0,$classId);
+			//$this->load->model("student_model");
+			
+			foreach($data as $d){
+				$this->student_model->unenroll($d->idstudents, $classId);
+			}
 			$this->load->view('formsuccess');
 		}
 		
 	}
 	
-	public function displayAll($type, $userId = 0)
-	{
+	public function displayAllStudents(){
 		
-		if($type=='s'){
-			$this->load->library("StudentFactory");
-			$data = array(
-				"students" => $this->studentfactory->getStudent($userId)
-			);
-			$this->load->view("displayStudents_view", $data);
-		}else{
-			$this->load->library("ClassFactory");
-			$data = array(
-				"classes" => $this->classfactory->getClass($userId)
-			);
-			$this->load->view("displayClasses_view", $data);
-		}
+		$this->load->model("student_model");
 
-
-		
+		$config = array();
+        $config["base_url"] = base_url() . "index.php/controller/displayAllStudents/";
+        $config["total_rows"] = $this->student_model->totalNumOfStudents();
+        $config["per_page"] = 2;
+        $config["uri_segment"] = 3;
+ 
+        $this->pagination->initialize($config);
+ 
+        $page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
+        $data["data"] = $this->student_model->paginationList($config["per_page"], $page);
+        $data["links"] = $this->pagination->create_links();
+        $this->load->view("displayAllStudents_view", $data);
 	}
 	
-	public function enroll($userId, $classId)
-	{
-	//check if student has reached max number classes (make a model method "number of classes")
-	//check if already enrolled (make model method isInClass)
-	//if not, put classid into class slot (make a model method "add class")
-	//formsuccess
+	public function displayAllClasses(){
+		
+		$this->load->model("class_model");
+
+		$config = array();
+        $config["base_url"] = base_url() . "index.php/controller/displayAllClasses/";
+        $config["total_rows"] = $this->class_model->totalNumOfClasses();
+        $config["per_page"] = 2;
+        $config["uri_segment"] = 3;
+ 
+        $this->pagination->initialize($config);
+ 
+        $page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
+        $data["data"] = $this->class_model->paginationList($config["per_page"], $page);
+        $data["links"] = $this->pagination->create_links();
+        $this->load->view("displayAllClasses_view", $data);
 	}
 	
-	public function unenroll($userId, $classId)
+	public function enroll($userId)
 	{
-	//check if student is enrolled in class (make a model method "isInClass")
-	//if yes, remove classid")
-	//formsuccess
+		$this->load->model("student_model");
+		if($this->student_model->numOfClasses($userId)<4){
+			if(!$this->student_model->isEnrolled($userId)){
+			
+				$this->student_model->enroll($userId);
+				$this->load->view('formsuccess');
+				
+			}else{echo "Already enrolled in this class";}
+		}else{echo "Class schedule full";}
+	}
+	
+	public function unenroll($userId)
+	{
+		$this->load->model("student_model");
+		if($this->student_model->isEnrolled($userId)){
+		
+			$this->student_model->unenroll($userId);
+			$this->load->view('formsuccess');
+			
+		}else{echo "Not enrolled in this class";}
 	}
 }
