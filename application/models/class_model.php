@@ -2,9 +2,8 @@
 
 class Class_model extends CI_Model {
 
-	/*
-	Class attributes
-	*/
+	/*Class attributes*/
+	
 	private $_idclasses;
 	private $_title;
 	private $_teacher;
@@ -14,45 +13,12 @@ class Class_model extends CI_Model {
 		parent::__construct();
 	}
 
-	/*
-	Get's & Set's
-	*/
+	/*Class Functions*/
 	
-	public function getID(){
-		return $this->_idclasses;
-	}
-	public function setID($val){
-		$this->_idclasses = $val;
-	}
-	
-	public function getTitle(){
-		return $this->_title;
-	}
-	public function setTitle($val){
-		$this->_title = $val;
-	}
-	
-	public function getTeacher(){
-		return $this->_teacher;
-	}
-	public function setTeacher($val){
-		$this->_teacher = $val;
-	}
-
-	public function getRoom(){
-		return $this->_room;
-	}
-	public function setRoom($val){
-		$this->_room = $val;
-	}		
-	
-	/*
-	Class Functions
-	*/
-	
-	public function addClass(){
-	//make a data array of all student attributes
-	$data = array(
+	public function addClass()
+	{
+	//Add class to DB
+		$data = array(
 			'title' => $this->input->post('title'),
 			'teacher' => $this->input->post('teacher'),
 			'room' => $this->input->post('room')
@@ -62,7 +28,9 @@ class Class_model extends CI_Model {
 		$this->db->insert("classes", $data);
 	}
 	
-	public function editClass($userId){
+	public function editClass($userId)
+	{
+	//Update student data in DB
 		$data = array(
 			'title' => $this->input->post('title'),
 			'teacher' => $this->input->post('teacher'),
@@ -73,31 +41,44 @@ class Class_model extends CI_Model {
 		$this->db->update('classes', $data); 	
 	}
 	
-	public function validateId(){
+	public function validateId()
+	{
+	//Retrieves an ID from a form and ensures ID exists in DB
 		$userId=$this->input->post('idclass');
+		
 		$query=$this->db->get_where('classes',array('idclasses'=>$userId)); 
-		if($query->num_rows() > 0){
+		
+		if($query->num_rows() > 0)
+		{
 			return $userId;
-		}else{
+		}
+		else
+		{
 			echo "ID does not exist.";
 			return null;
 		}
 	}
 	
-	public function deleteClass($userId){
+	public function deleteClass($userId)
+	{
 		$this->db->delete('classes', array('idclasses' => $userId)); 
 	}
 
-	public function totalNumOfClasses(){
+	public function totalNumOfClasses()
+	{
 		return $this->db->count_all("classes");
 	}
 	
-	public function paginationList($limit, $start){		
+	public function paginationList($limit, $start)
+	{
+	//Returns an array of classes limited for pagination
         $this->db->limit($limit, $start);
         $query = $this->db->get("classes");
  
-        if ($query->num_rows() > 0) {
-            foreach ($query->result() as $row) {
+        if ($query->num_rows() > 0) 
+		{
+            foreach ($query->result() as $row) 
+			{
                 $data[] = $row;
             }
             return $data;
@@ -106,20 +87,31 @@ class Class_model extends CI_Model {
    
 	}
 	
-	public function getClass($userId = 0){
-	$data = array();
-		if($userId>0){
+	public function getClass($userId = null)
+	{
+		$data = array();
+		
+		//If userId provided, retrieve that specific student
+		if($userId!=null)
+		{
 			$query = $this->db->get_where("classes", array("idclasses" => $userId));
-			if ($query->num_rows() > 0) {
+			
+			if ($query->num_rows() > 0) 
+			{
 				$data[] = $query->row();
 			}
-			else{echo "no class found";}
+			else
+				{echo "No class found";}
 		}
-		else{
+		//Else, if no userId provided, return multiple students
+		else
+		{
 			$query = $this->db->select("*")->from("classes")->get();
-			if ($query->num_rows() > 0) {
+			if ($query->num_rows() > 0) 
+			{
 				//Loop through each row returned from the query
-				foreach ($query->result() as $row) {
+				foreach ($query->result() as $row) 
+				{
 					$data[] = $row;
 				}
 			}

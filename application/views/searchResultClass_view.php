@@ -1,6 +1,17 @@
-<a href="<?php echo site_url('/controller/editClass/'.$userId); ?>">Edit class</a>
+<!--Link options for class manipulation-->
 
-<a href="<?php echo site_url('/controller/deleteClass/'.$userId); ?>">Delete class</a>
+<div id = 'classLinkOptions'>
+	<a href="<?php echo site_url('/classController/editClass/'.$userId); ?>">
+		Edit class
+	</a>
+	<br>
 
-<a href="<?php echo site_url('/controller/listAllStudents/'.$userId); ?>">Diplay all enrolled students</a>
+	<a href="<?php echo site_url('/classController/deleteClass/'.$userId); ?>">
+		Delete class
+	</a>
+	<br>
 
+	<a href="<?php echo site_url('/classController/listAllStudents/'.$userId); ?>">
+		Diplay all enrolled students
+	</a>
+</div>

@@ -5,23 +5,23 @@
 	</tr>		
 	<tr>
 		<th>
-			<a href="<?php echo site_url('/controller/addStudent'); ?>">
+			<a href="<?php echo site_url('/studentController/addStudent'); ?>">
 			Add</a>
 		</th>
 		<th>
-			<a href="<?php echo site_url('/controller/addClass'); ?>">
+			<a href="<?php echo site_url('/classController/addClass'); ?>">
 			Add</a>
 		</th>
 	</tr>
 	<tr>
 		<th>Search Student
-			<?php echo form_open('controller/searchStudent'); ?>
+			<?php echo form_open('studentController/searchStudent'); ?>
 				<input type="text" name="idstudent" value="" size="8" />
 				<input type="submit" value="search" />
 			</form>
 		</th>
 		<th>Search Class
-			<?php echo form_open('controller/searchClass'); ?>
+			<?php echo form_open('classController/searchClass'); ?>
 				<input type="text" name="idclass" value="" size="8" />
 				<input type="submit" value="search" />
 			</form>
@@ -29,12 +29,12 @@
 	</tr>
 	<tr>
 		<th>
-			<a href="<?php echo site_url('/controller/displayAllStudents/'); ?>">
+			<a href="<?php echo site_url('/studentController/displayAllStudents/'); ?>">
 			Display all
 		</a>
 		</th>
 		<th>
-			<a href="<?php echo site_url('/controller/displayAllClasses'); ?>">
+			<a href="<?php echo site_url('/classController/displayAllClasses'); ?>">
 			Display all</a>
 		</th>
 	</tr>

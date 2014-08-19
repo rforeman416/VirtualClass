@@ -1,33 +1,41 @@
+<head>
+	 <h1>Classes:</h1>
+</head>
 <body>
-  <h1>Students</h1>
-<?php
-echo <<<HTML
+	<?php 
+	if(empty($data))
+	{
+		echo 'No classes to display';
+	}
+	else{ 
+	?>
 
-		<table border='1'>
-			<tr>
-				<th>ID #</th>
-				<th>Title</th>
-				<th>Teacher</th>
-				<th>Room</th>
-			</tr>
+			<table border='1'>
+				<tr>
+					<th>ID #</th>
+					<th>Title</th>
+					<th>Teacher</th>
+					<th>Room</th>
+				</tr>
 
-HTML;
+				<?php 
+				//Loop through all the users and create a row for each within the table
+				foreach ($data as $d) { 
+				?>
+					
+						<tr>
+							<td><?php echo $d->idclasses ?></td>
+							<td><?php echo $d->title ?></td>
+							<td><?php echo $d->teacher ?></td>
+							<td><?php echo $d->room ?></td>
+						</tr>
+	
+					<?php } 
+					?>
+						</table>
 
-			//Loop through all the users and create a row for each within the table
-			foreach ($data as $d) {
-				echo <<<HTML
-
-					<tr>
-						<td>{$d->idclasses}</td>
-						<td>{$d->title}</td>
-						<td>{$d->teacher}</td>
-						<td>{$d->room}</td>
-					</tr>
-HTML;
-				}?>
-					</table>
-
-
-   <p><?php echo $links; ?></p>
+	<?php } 
+	?>
+	   <p> <?php echo $links; ?> </p>
 
 </body>

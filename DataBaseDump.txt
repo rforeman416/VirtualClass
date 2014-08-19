@@ -1,15 +1,26 @@
 CREATE SCHEMA `virtualclassproj` ;
-CREATE TABLE `virtualclassproj`.`students` (
+CREATE TABLE `virtualclassproj`.`students` 
+(
   `idstudents` INT NOT NULL AUTO_INCREMENT,
+
   `firstName` VARCHAR(45) NOT NULL,
+
   `lastName` VARCHAR(45) NOT NULL,
+
   `midName` VARCHAR(45) NULL,
-  `class1` VARCHAR(45) NULL,
-  `class2` VARCHAR(45) NULL,
-  `class3` VARCHAR(45) NULL,
-  `class4` VARCHAR(45) NULL,
+
+  `class1` INT(11) NULL,
+
+  `class2` INT(11) NULL,
+
+  `class3` INT(11) NULL,
+
+  `class4` INT(11) NULL,
+
   PRIMARY KEY (`idstudents`),
+
   UNIQUE INDEX `idstudents_UNIQUE` (`idstudents` ASC));
+
 
 CREATE TABLE `virtualclassproj`.`classes` (
 

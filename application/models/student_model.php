@@ -2,9 +2,8 @@
 
 class Student_model extends CI_Model {
 
-	/*
-	Student attributes
-	*/
+	//Student attributes
+	
 	private $_idstudents;
 	private $_firstName;
 	private $_lastName;
@@ -18,84 +17,23 @@ class Student_model extends CI_Model {
 		parent::__construct();
 	}
 
-	/*
-	Get's & Set's
-	*/
+	/*Student Functions*/
 	
-	public function getID(){
-		return $this->_idstudents;
-	}
-	
-	public function setID($val){
-		$this->_idstudents = $val;
-	}
-	
-	public function getFirstName(){
-		return $this->_firstName;
-	}
-	public function setFirstName($val){
-		$this->_firstName = $val;
-	}
-	
-	public function getLastName(){
-		return $this->_lastName;
-	}
-	public function setLastName($val){
-		$this->_lastName = $val;
-	}
-
-	public function getMidName(){
-		return $this->_midName;
-	}
-	public function setMidName($val){
-		$this->_midName = $val;
-	}
-
-	public function getClass1(){
-		return $this->_class1;
-	}
-	public function setClass1($val){
-		$this->_class1 = $val;
-	}
-
-	public function getClass2(){
-		return $this->_class2;
-	}
-	public function setClass2($val){
-		$this->_class2 = $val;
-	}	
-
-	public function getClass3(){
-		return $this->_class3;
-	}
-	public function setClass3($val){
-		$this->_class3 = $val;
-	}	
-
-	public function getClass4(){
-		return $this->_class4;
-	}
-	public function setClass4($val){
-		$this->_class4 = $val;
-	}		
-	
-	/*
-	Student Functions
-	*/
-	
-	public function addStudent(){
-	//make a data array of all student attributes
-	$data = array(
-			'firstName' => $this->input->post('firstName'),
-			'lastName' => $this->input->post('lastName'),
-			'midName' => $this->input->post('midName')
-
-		);
+	public function addStudent()
+	{
+	//Add student to DB
+		$data = array(
+				'firstName' => $this->input->post('firstName'),
+				'lastName' => $this->input->post('lastName'),
+				'midName' => $this->input->post('midName')
+			);
 		
 		$this->db->insert("students", $data);
 	}
 	
-	public function editStudent($userId){
+	public function editStudent($userId)
+	{
+	//Update student data in DB
 		$data = array(
 			'firstName' => $this->input->post('firstName'),
 			'lastName' => $this->input->post('lastName'),
@@ -106,23 +44,34 @@ class Student_model extends CI_Model {
 		$this->db->update('students', $data); 	
 	}
 	
-	public function validateId(){
+	public function validateId()
+	{
+	//Retrieves an ID from a form and ensures ID exists in DB
 		$userId=$this->input->post('idstudent');
+		
 		$query=$this->db->get_where('students',array('idstudents'=>$userId)); 
-		if($query->num_rows() > 0){
+		
+		if($query->num_rows() > 0)
+		{
 			return $userId;
-		}else{
+		}
+		else
+		{
 			echo "ID does not exist.";
 			return null;
 		}
 	}
 	
-	public function numOfClasses($userId){
+	public function numOfClasses($userId)
+	{
+	//Returns total number of classes given student has
 	   $query=$this->db->get_where('students',array('idstudents'=>$userId)); 
 	   $count=0;
-    		if ($query->num_rows() > 0) {
+    		if ($query->num_rows() > 0) 
+			{
     			//Loop through each row returned from the query
-    			foreach ($query->result() as $row) {
+    			foreach ($query->result() as $row) 
+				{
 					if($row->class1){$count++;}
 					if($row->class2){$count++;}
 					if($row->class3){$count++;}
@@ -132,99 +81,127 @@ class Student_model extends CI_Model {
 		return $count;
 	}
 	
-	public function isEnrolled($userId){
+	public function isEnrolled($userId)
+	{
+	//Check if given student is enrolled in given class
 		$classId=$this->input->post('idclass');
-		echo $classId;
-		$this->db->select('*');
-		$this->db->from('students');
-		$this->db->where('idstudents', $userId);
-		$this->db->where('class1', $classId);
-		$this->db->or_where('class2', $classId);
-		$this->db->or_where('class3', $classId);
-		$this->db->or_where('class4', $classId);
-		$query=$this->db->get();
-		if ($query->num_rows() > 0) {
+		
+		//Query checks for row with student ID and class ID
+		$query = $this->db->query('SELECT * FROM students WHERE idstudents = '.$userId.' AND (class1 = '.$classId.' OR class2 = '.$classId.' OR class3 = '.$classId.' OR class4 = '.$classId.')');
+		
+		if ($query->num_rows() > 0) 
+		{
 			return true;
 		}
 		return false;
 	}
 	
-	public function enroll($userId){
+	public function enroll($userId)
+	{
+	//Enroll a given student in a given course
+	//Returns false if Class ID is invalid
 		$classId=$this->input->post('idclass');
+		//Check if course is real
+		if($this->class_model->validateId($classId))
+		{
 		   $query=$this->db->get_where('students',array('idstudents'=>$userId)); 
-			if ($query->num_rows() > 0) {
-				//Loop through each row returned from the query
-				foreach ($query->result() as $row) {
-					if(!$row->class1){
+		   
+			if ($query->num_rows() > 0) 
+			{
+				//Add class ID to an empty class slot
+				foreach ($query->result() as $row) 
+				{
+					if(!$row->class1)
+					{
 						$data = array('class1' => $classId);
 						$this->db->where('idstudents', $userId);
 						$this->db->update('students', $data);		
 					}
-					elseif(!$row->class2){
+					elseif(!$row->class2)
+					{
 						$data = array('class2' => $classId);
 						$this->db->where('idstudents', $userId);
 						$this->db->update('students', $data);		
 					}
-					elseif(!$row->class3){
+					elseif(!$row->class3)
+					{
 						$data = array('class3' => $classId);
 						$this->db->where('idstudents', $userId);
 						$this->db->update('students', $data);		
 					}
-					else{
+					else
+					{
 						$data = array('class4' => $classId);
 						$this->db->where('idstudents', $userId);
 						$this->db->update('students', $data);		
 					}
 				}
-			}			
+			}
+			return true;
+		}
+		return false;
 	}
 
-	public function unenroll($userId, $classId=0){
-		if($classId==0){
+	public function unenroll($userId, $classId=null)
+	{
+		//If no classId provided, look for it in form data
+		if($classId==null){
 			$classId=$this->input->post('idclass');
 		}
-		   $query=$this->db->get_where('students',array('idstudents'=>$userId)); 
-			if ($query->num_rows() > 0) {
-				//Loop through each row returned from the query
-				foreach ($query->result() as $row) {
-					if($row->class1==$classId){
-						$data = array('class1' => null);
-						$this->db->where('idstudents', $userId);
-						$this->db->update('students', $data);		
-					}
-					elseif($row->class2==$classId){
-						$data = array('class2' => null);
-						$this->db->where('idstudents', $userId);
-						$this->db->update('students', $data);		
-					}
-					elseif($row->class3==$classId){
-						$data = array('class3' => null);
-						$this->db->where('idstudents', $userId);
-						$this->db->update('students', $data);		
-					}
-					elseif($row->class4==$classId){
-						$data = array('class4' => null);
-						$this->db->where('idstudents', $userId);
-						$this->db->update('students', $data);		
-					}
+		
+	   $query=$this->db->get_where('students',array('idstudents'=>$userId)); 
+		if ($query->num_rows() > 0) {
+			//Remove class ID from whichever class slot it's found in (set it as null in DB)
+			foreach ($query->result() as $row) 
+			{
+				if($row->class1==$classId)
+				{
+					$data = array('class1' => null);
+					$this->db->where('idstudents', $userId);
+					$this->db->update('students', $data);		
+				}
+				elseif($row->class2==$classId)
+				{
+					$data = array('class2' => null);
+					$this->db->where('idstudents', $userId);
+					$this->db->update('students', $data);		
+				}
+				elseif($row->class3==$classId)
+				{
+					$data = array('class3' => null);
+					$this->db->where('idstudents', $userId);
+					$this->db->update('students', $data);		
+				}
+				elseif($row->class4==$classId)
+				{
+					$data = array('class4' => null);
+					$this->db->where('idstudents', $userId);
+					$this->db->update('students', $data);		
 				}
 			}
+		}
 	}
 	
-	public function deleteStudent($userId){
+	public function deleteStudent($userId)
+	{
 		$this->db->delete('students', array('idstudents' => $userId)); 
 	}
 
-	public function totalNumOfStudents(){
+	public function totalNumOfStudents()
+	{
 		return $this->db->count_all("students");
 	}
 	
-	public function paginationList($limit, $start){		
+	public function paginationList($limit, $start)
+	{		
+	//Returns an array of students limited for pagination
         $this->db->limit($limit, $start);
         $query = $this->db->get("students");
  
-        if ($query->num_rows() > 0) {
-            foreach ($query->result() as $row) {
+        if ($query->num_rows() > 0) 
+		{
+            foreach ($query->result() as $row) 
+			{
                 $data[] = $row;
             }
             return $data;
@@ -233,25 +210,40 @@ class Student_model extends CI_Model {
    
 	}
 	
-	public function getStudent($userId = 0, $classId=0){
+	public function getStudent($userId = null, $byClassId=null)
+	{
 		$data = array();
-		if($userId>0){
+		
+		//If userId provided, retrieve that specific student
+		if($userId!=null)
+		{
 			$query = $this->db->get_where("students", array("idstudents" => $userId));
-			if ($query->num_rows() > 0) {
+			
+			if ($query->num_rows() > 0) 
+			{
 				$data[] = $query->row();
 			}
-			else{echo "no student found";}
+			else
+				{echo "No student found";}
 		}
+		//Else, if no userId provided, return multiple students
 		else{
 			$query = $this->db->select("*")->from("students")->get();
-			if ($query->num_rows() > 0) {
+			
+			if ($query->num_rows() > 0) 
+			{
 				//Loop through each row returned from the query
-				foreach ($query->result() as $row) {
-					if($byClassId==0){
+				foreach ($query->result() as $row) 
+				{
+					//If no class ID provided, return all students
+					if($byClassId==null){
 						$data[] = $row;
 					}
-					else{
-						if($row->class1==$byClassId | $row->class2==$byClassId | $row->class3==$byClassId | $row->class4==$byClassId){
+					//If class ID provided, only return students enrolled in that class
+					else
+					{
+						if($row->class1==$byClassId | $row->class2==$byClassId | $row->class3==$byClassId | $row->class4==$byClassId)
+						{
 							$data[] = $row;
 						}
 					}
