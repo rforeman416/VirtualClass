@@ -1,8 +1,5 @@
-<html>
 <!--Footer redirects to main page-->
-	<footer>
-		<p>
-			<?php echo anchor('studentController/index', 'Back to main'); ?>
-		</p>
-	</footer>
-</html>
+<footer class="col-xs-1">
+	<a href="<?= base_url();?>index.php/studentController/index" class="btn btn-primary">
+		Back</a>
+</footer>

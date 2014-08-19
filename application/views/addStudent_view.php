@@ -1,30 +1,52 @@
 <html>
 <head>
 	<h1>Add a Student</h1>
+	<link href="<?= base_url();?>assets/css/bootstrap.css" rel="stylesheet">
 </head>
 
 <body>
-
-	<?php 
-	//Sends for information to studentController method 'addStudent()'
-	echo validation_errors();
-	echo form_open('studentController/addStudent'); 
-	?>
-
-	<!--Add form-->
-	<h5>First Name</h5>
-	<input type="text" name="firstName" value="<?php echo set_value('firstName'); ?>" size="50" />
-
-	<h5>Middle Name</h5>
-	<input type="text" name="midName" value="<?php echo set_value('midName'); ?>" size="50" />
-
-	<h5>Last Name</h5>
-	<input type="text" name="lastName" value="<?php echo set_value('lastName'); ?>" size="50" />
-
-
-	<div><input type="submit" value="Submit" /></div>
+<div class="container-fluid">	
+	<?php echo validation_errors(); ?>
+		
+	<!--Add Form-->
+	<form class="form-horizontal" role="form" action='<?= base_url();?>index.php/studentController/addStudent' method="post">
+		
+		
+		<!--First Name Input-->
+		<div class="row">
+			<label for="firstName" class="col-lg-3 control-label">First Name: </label>
+			<div class="col-xs-6 ">
+				<input type="text" class="form-control" name="firstName" id="firstName"  value="<?php echo set_value('firstName'); ?>" size="20">
+			</div>
+		</div>
+		<br>
+		
+		<!--Middle Name Input-->
+		<div class="row">
+		<label for="midName" class="col-lg-3 control-label">Middle Name: </label>
+			<div class="col-lg-6">
+				<input type="text" class="form-control" name="midName" id="midName"  value="<?php echo set_value('midName'); ?>" size="20">
+			</div>
+		</div>
+		<br>
+		
+		<!--Last Name Input-->
+		<div class="row">
+			<label for="lastName" class="col-lg-3 control-label">Last Name: </label>
+			<div class="col-lg-6">
+				<input type="text" class="form-control" name="lastName" id="lastName"  value="<?php echo set_value('lastName'); ?>" size="20">
+			</div>
+		</div>
+		<br>
+		
+		<!--Submit Button-->
+		<div class="col-lg-offset-3 col-lg-10">
+		  <button type="submit" class="btn btn-success">Add</button> 
+		</div>
 
 	</form>
-
+	<br>
+	<br>
+</fluid>
 </body>
 </html>

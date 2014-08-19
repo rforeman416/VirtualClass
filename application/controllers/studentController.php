@@ -90,13 +90,9 @@ class StudentController extends CI_Controller {
 
 	public function deleteStudent($userId)
 	{
-		if (true)//NEED SOME KIND OF POP-UP MECHANISM TO DOUBLE CHECK
-		{
-			$this->student_model->deleteStudent($userId);
-			$this->session->set_flashdata('msg', 'Student deleted');
-			redirect('/studentController/index');
-		}
-		
+		$this->student_model->deleteStudent($userId);
+		$this->session->set_flashdata('msg', 'Student deleted');
+		redirect('/studentController/index');
 	}
 	
 	public function displayAllStudents()

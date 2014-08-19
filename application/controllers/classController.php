@@ -98,19 +98,15 @@ class ClassController extends CI_Controller {
 	
 	public function deleteClass($classId=0)
 	{
-		if (true)//NEED SOME KIND OF POP-UP MECHANISM TO DOUBLE CHECK
-		{
-			$this->class_model->deleteClass($classId);
-			
-			$data = $this->student_model->getStudent(null,$classId);
-			//If a class is deleted, remove all students from it.
-			foreach($data as $d){
-				$this->student_model->unenroll($d->idstudents, $classId);
-			}
-			$this->session->set_flashdata('msg', 'Class deleted');
-			redirect('/studentController/index');
-		}
+		$this->class_model->deleteClass($classId);
 		
+		$data = $this->student_model->getStudent(null,$classId);
+		//If a class is deleted, remove all students from it.
+		foreach($data as $d){
+			$this->student_model->unenroll($d->idstudents, $classId);
+		}
+		$this->session->set_flashdata('msg', 'Class deleted');
+		redirect('/studentController/index');
 	}
 	
 	public function displayAllClasses()
