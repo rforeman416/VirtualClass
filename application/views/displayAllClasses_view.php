@@ -1,6 +1,6 @@
 <html>
 <head>
-	 <h1>Classe Info:</h1>
+	 <h1>Class Info:</h1>
 	 <br>
 	 <br>
 	<link href="<?= base_url();?>assets/css/bootstrap.css" rel="stylesheet">	
