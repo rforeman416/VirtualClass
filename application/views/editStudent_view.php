@@ -81,9 +81,10 @@
 		</div>
 
 	</form>
-	<br>
-	<br>
+
 </table>
+	<br>
+	<br>
 </div>
 </body>
 </html>
