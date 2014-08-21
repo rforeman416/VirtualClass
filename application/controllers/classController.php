@@ -36,7 +36,7 @@ class ClassController extends CI_Controller {
 		}
 		//Data array for view, conains an array 'data' containing DB row at userId
 		$data = array(
-			"data" => $this->class_model->getClass($userId),
+			"data" => $this->class_model->getClassInfo($userId),
 			"userId" => $userId,
 			"links"=>""
 		);
@@ -57,7 +57,7 @@ class ClassController extends CI_Controller {
 	public function editClass($userId)
 	{
 		//Create instance of chosen class to access data
-		$classes=$this->class_model->getClass($userId);
+		$classes=$this->class_model->getClassInfo($userId);
 		$data = array(
 			"class" => $classes[0]
 		);
@@ -86,7 +86,7 @@ class ClassController extends CI_Controller {
 	//List all students in given class
 		$data = array(
 			//getStudent with first param=null returns multiple students
-			"data" => $this->student_model->getStudent(null,$classId),
+			"data" => $this->class_model->listAllStudents($classId),
 			"links" => ""
 		);
 		//Display list of enrolled students
@@ -100,11 +100,6 @@ class ClassController extends CI_Controller {
 	{
 		$this->class_model->deleteClass($classId);
 		
-		$data = $this->student_model->getStudent(null,$classId);
-		//If a class is deleted, remove all students from it.
-		foreach($data as $d){
-			$this->student_model->unenroll($d->idstudents, $classId);
-		}
 		$this->session->set_flashdata('msg', 'Class deleted');
 		redirect('/studentController/index');
 	}

@@ -41,9 +41,12 @@ class StudentController extends CI_Controller {
 				redirect('/studentController/index');
 			}
 		}
-		//Data array for view, conains an array 'data' containing DB row at userId
+		
+		
+		//Data array for views, contains an array 'data' containing DB row at userId
 		$data = array(
-			"data" => $this->student_model->getStudent($userId),
+			"data" => $this->student_model->getStudentInfo($userId),
+			"classList" => $this->student_model->getStudentClassList($userId),
 			"userId" => $userId,
 			"links"=>""
 		);
@@ -64,7 +67,7 @@ class StudentController extends CI_Controller {
 	public function editStudent($userId)
 	{
 		//Create instance of chosen student to access data
-		$students=$this->student_model->getStudent($userId);
+		$students=$this->student_model->getStudentInfo($userId);
 		$data = array(
 			"student" => $students[0]
 		);
@@ -123,19 +126,15 @@ class StudentController extends CI_Controller {
 	
 	public function enroll($userId)
 	{
-		//Check if student has available class slots
-		if($this->student_model->numOfClasses($userId)<4){
-		
-			//Check if student is already enrolled
-			if(!$this->student_model->isEnrolled($userId)){
-				
-				if(!$this->student_model->enroll($userId))
-					{$errormsg= "Course ID is invalid";}
-				
-			}else
-				{$errormsg= "Already enrolled in this class";}
+	
+		//Check if student is already enrolled
+		if(!$this->student_model->isEnrolled($userId)){
+			
+			if(!$this->student_model->enroll($userId))
+				{$errormsg= "Course ID is invalid";}
+			
 		}else
-			{$errormsg= "Class schedule full";}
+			{$errormsg= "Already enrolled in this class";}
 			
 		$this->session->set_flashdata('msg', $errormsg);
 		redirect('/studentController/searchStudent/'.$userId);

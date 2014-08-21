@@ -29,7 +29,11 @@
 			?>
 				
 					<tr>
-						<td><?php echo $d->idclasses ?></td>
+						<td>
+							<!--Links to more info-->
+							<a href="<?php echo site_url('/classController/searchClass/'.$d->idclasses); ?>">
+								<?php echo $d->idclasses ?>
+							</a></td>
 						<td><?php echo $d->title ?></td>
 						<td><?php echo $d->teacher ?></td>
 						<td><?php echo $d->room ?></td>

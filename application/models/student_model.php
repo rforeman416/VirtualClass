@@ -61,33 +61,14 @@ class Student_model extends CI_Model {
 			return null;
 		}
 	}
-	
-	public function numOfClasses($userId)
-	{
-	//Returns total number of classes given student has
-	   $query=$this->db->get_where('students',array('idstudents'=>$userId)); 
-	   $count=0;
-    		if ($query->num_rows() > 0) 
-			{
-    			//Loop through each row returned from the query
-    			foreach ($query->result() as $row) 
-				{
-					if($row->class1){$count++;}
-					if($row->class2){$count++;}
-					if($row->class3){$count++;}
-					if($row->class4){$count++;}
-				}
-			}
-		return $count;
-	}
-	
+
 	public function isEnrolled($userId)
 	{
 	//Check if given student is enrolled in given class
 		$classId=$this->input->post('idclass');
 		
 		//Query checks for row with student ID and class ID
-		$query = $this->db->query('SELECT * FROM students WHERE idstudents = '.$userId.' AND (class1 = '.$classId.' OR class2 = '.$classId.' OR class3 = '.$classId.' OR class4 = '.$classId.')');
+		$query = $query = $this->db->get_where('junctiontable', array('idstudents' => $userId, 'idclasses' => $classId));
 		
 		if ($query->num_rows() > 0) 
 		{
@@ -104,40 +85,13 @@ class Student_model extends CI_Model {
 		//Check if course is real
 		if($this->class_model->validateId($classId))
 		{
-		   $query=$this->db->get_where('students',array('idstudents'=>$userId)); 
-		   
-			if ($query->num_rows() > 0) 
-			{
-				//Add class ID to an empty class slot
-				foreach ($query->result() as $row) 
-				{
-					if(!$row->class1)
-					{
-						$data = array('class1' => $classId);
-						$this->db->where('idstudents', $userId);
-						$this->db->update('students', $data);		
-					}
-					elseif(!$row->class2)
-					{
-						$data = array('class2' => $classId);
-						$this->db->where('idstudents', $userId);
-						$this->db->update('students', $data);		
-					}
-					elseif(!$row->class3)
-					{
-						$data = array('class3' => $classId);
-						$this->db->where('idstudents', $userId);
-						$this->db->update('students', $data);		
-					}
-					else
-					{
-						$data = array('class4' => $classId);
-						$this->db->where('idstudents', $userId);
-						$this->db->update('students', $data);		
-					}
-				}
-			}
-			return true;
+			$this->db->insert("junctionTable", array(
+				'idclasses' =>$classId,
+				'idstudents' => $userId
+				)
+			);			
+
+			return true;	
 		}
 		return false;
 	}
@@ -148,38 +102,12 @@ class Student_model extends CI_Model {
 		if($classId==null){
 			$classId=$this->input->post('idclass');
 		}
-		
-	   $query=$this->db->get_where('students',array('idstudents'=>$userId)); 
-		if ($query->num_rows() > 0) {
-			//Remove class ID from whichever class slot it's found in (set it as null in DB)
-			foreach ($query->result() as $row) 
-			{
-				if($row->class1==$classId)
-				{
-					$data = array('class1' => null);
-					$this->db->where('idstudents', $userId);
-					$this->db->update('students', $data);		
-				}
-				elseif($row->class2==$classId)
-				{
-					$data = array('class2' => null);
-					$this->db->where('idstudents', $userId);
-					$this->db->update('students', $data);		
-				}
-				elseif($row->class3==$classId)
-				{
-					$data = array('class3' => null);
-					$this->db->where('idstudents', $userId);
-					$this->db->update('students', $data);		
-				}
-				elseif($row->class4==$classId)
-				{
-					$data = array('class4' => null);
-					$this->db->where('idstudents', $userId);
-					$this->db->update('students', $data);		
-				}
-			}
-		}
+
+		$this->db->delete('junctiontable', array(
+		'idclasses' => $classId, 
+		'idstudents' => $userId)
+		); 
+
 	}
 	
 	public function deleteStudent($userId)
@@ -207,16 +135,35 @@ class Student_model extends CI_Model {
             return $data;
         }
         return false;
-   
 	}
 	
-	public function getStudent($userId = null, $byClassId=null)
+	public function getStudentClassList($userId)
 	{
 		$data = array();
 		
-		//If userId provided, retrieve that specific student
-		if($userId!=null)
+		//$query = $query = $this->db->get_where('junctiontable', array('idstudents' => $userId));
+		
+		//Get classes info using junction table and inner join
+		$this->db->select('classes.idclasses, classes.title');
+		$this->db->from('junctiontable');
+		$this->db->join('classes', 'junctiontable.idclasses = classes.idclasses','inner');
+		$this->db->where('junctiontable.idstudents', $userId); 
+		$query = $this->db->get();
+		
+		if ($query->num_rows() > 0) 
 		{
+            foreach ($query->result() as $row) 
+			{
+                $data[] = $row;
+            }
+            return $data;
+        }
+	}
+	
+	public function getStudentInfo($userId)
+	{
+		$data = array();
+		
 			$query = $this->db->get_where("students", array("idstudents" => $userId));
 			
 			if ($query->num_rows() > 0) 
@@ -225,31 +172,7 @@ class Student_model extends CI_Model {
 			}
 			else
 				{echo "No student found";}
-		}
-		//Else, if no userId provided, return multiple students
-		else{
-			$query = $this->db->select("*")->from("students")->get();
 			
-			if ($query->num_rows() > 0) 
-			{
-				//Loop through each row returned from the query
-				foreach ($query->result() as $row) 
-				{
-					//If no class ID provided, return all students
-					if($byClassId==null){
-						$data[] = $row;
-					}
-					//If class ID provided, only return students enrolled in that class
-					else
-					{
-						if($row->class1==$byClassId | $row->class2==$byClassId | $row->class3==$byClassId | $row->class4==$byClassId)
-						{
-							$data[] = $row;
-						}
-					}
-				}
-			}
-		}
 		return $data;
 
 	}

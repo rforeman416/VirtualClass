@@ -12,9 +12,42 @@
 	</script>	
 </head>	
 <body>
-<!--Link options for student manipulation-->
+<br>
+
 <div class="container-fluid">
-	<br>
+
+<!---List of student's classes-->
+	<?php
+	if(empty($classList))
+	{
+		echo 'No classes to display';
+	}
+	else{ ?>
+		<table class='smallerTable'>
+
+			<tr class="smallerCells">
+				<th class="smallerCells">Class list:</th>
+				<th class="smallerCells"></th>
+			</tr>
+				<?php 
+			foreach ($classList as $d) { ?>
+				
+					<tr class="smallerCells">
+						<td class="smallerCells">
+							<!--Links to more info-->
+							<a href="<?php echo site_url('/classController/searchClass/'.$d->idclasses); ?>">
+								<?php echo $d->idclasses ?>
+							</a></td>
+						<td class="smallerCells"><?php echo $d->title ?></td>
+					</tr>
+
+				<?php } ?>
+		</table>
+		<br>
+		<?php }?>
+		
+
+<!--Link options for student manipulation-->
 	
 	<!--Edit Student-->
 	<div id = 'editStudent'>
@@ -31,8 +64,7 @@
 		<!--Alert box to confirm delete-->
 		<div id="confirm-delete" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
-				<div class="modal-content">
-				
+				<div class="modal-content">	
 					<div class="modal-body">
 						<p>Are you sure you want to delete this student?</p>
 					</div>

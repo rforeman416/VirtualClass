@@ -86,14 +86,32 @@ class Class_model extends CI_Model {
         return false;
    
 	}
-	
-	public function getClass($userId = null)
+	public function listAllStudents($userId)
 	{
 		$data = array();
 		
-		//If userId provided, retrieve that specific student
-		if($userId!=null)
+		//Get student info using junction table and inner join
+		$this->db->select('students.idstudents, students.firstName, students.midName, students.lastName');
+		$this->db->from('junctiontable');
+		$this->db->join('students', 'junctiontable.idstudents = students.idstudents','inner');
+		$this->db->where('junctiontable.idclasses', $userId); 
+		$query = $this->db->get();
+		
+		if ($query->num_rows() > 0) 
 		{
+            foreach ($query->result() as $row) 
+			{
+                $data[] = $row;
+            }
+            return $data;
+        }
+	}
+	
+	public function getClassInfo($userId)
+	{
+		//Return a data array of class attributes (columns)
+		$data = array();
+		
 			$query = $this->db->get_where("classes", array("idclasses" => $userId));
 			
 			if ($query->num_rows() > 0) 
@@ -102,20 +120,7 @@ class Class_model extends CI_Model {
 			}
 			else
 				{echo "No class found";}
-		}
-		//Else, if no userId provided, return multiple students
-		else
-		{
-			$query = $this->db->select("*")->from("classes")->get();
-			if ($query->num_rows() > 0) 
-			{
-				//Loop through each row returned from the query
-				foreach ($query->result() as $row) 
-				{
-					$data[] = $row;
-				}
-			}
-		}
+			
 		return $data;
 
 	}

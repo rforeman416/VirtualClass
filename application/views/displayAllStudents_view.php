@@ -22,10 +22,7 @@
 				<th>First Name</th>
 				<th>Last Name</th>
 				<th>Middle Name</th>
-				<th>Class 1</th>
-				<th>Class 2</th>
-				<th>Class 3</th>
-				<th>Class 4</th>
+
 			</tr>
 
 			<?php 
@@ -33,18 +30,19 @@
 			foreach ($data as $d) { ?>
 				
 					<tr>
-						<td><?php echo $d->idstudents ?></td>
+						<td>
+							<!--Links to more info-->
+							<a href="<?php echo site_url('/studentController/searchStudent/'.$d->idstudents); ?>">
+								<?php echo $d->idstudents ?>
+							</a></td>
 						<td><?php echo $d->firstName ?></td>
 						<td><?php echo $d->lastName ?></td>
 						<td><?php echo $d->midName ?></td>
-						<td><?php echo $d->class1 ?></td>
-						<td><?php echo $d->class2 ?></td>
-						<td><?php echo $d->class3 ?></td>
-						<td><?php echo $d->class4 ?></td>
 					</tr>
 
 				<?php } ?>
 		</table>
+
 
 	<?php } ?>
 	<p> <?php echo $links; ?> </p>
